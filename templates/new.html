@@ -5,11 +5,18 @@
             <div class="container">
                 <div class="new-entry">
                     <h2>New Entry</h2>
-                    <form method="POST" action="">
+                    <form method="POST" action="/new">
                         {{ form.hidden_tag() }}
-                        {% for field in form %}
-                            {{ render_field(field) }}
-                        {% endfor %}
+                        {{form.title.label}}
+                        {{form.title}}
+                        {{form.date.label}}
+                        {{form.date(type='date')}}
+                        {{form.time_spent.label}}
+                        {{form.time_spent}}
+                        {{form.learnings.label}}
+                        {{form.learnings}}
+                        {{form.rememberings.label}}
+                        {{form.rememberings}}
                         <input type="submit" value="Publish Entry" class="button">
                         <a href="#" class="button button-secondary">Cancel</a>
                     </form>

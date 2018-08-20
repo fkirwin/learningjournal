@@ -19,13 +19,15 @@ class User(UserMixin, BaseModel):
     is_admin = BooleanField(default=False)
 
     @classmethod
-    def write_user(cls, username, password, joined_on, is_admin):
+    def write_user(cls, username, password, is_admin, joined_on=None):
+        if not joined_on:
+            joined_on = datetime.date.today()
         try:
             with DATABASE.transaction():
                 cls.create(username = username,
                     password = generate_password_hash(password),
-                    joined_on = joined_on,
-                    is_admin = is_admin)
+                    is_admin = is_admin,
+                    joined_on = joined_on)
         except IntegrityError:
             raise ValueError("User already exists")
 
@@ -66,7 +68,7 @@ def initialize():
     DATABASE.create_tables([User, Entry], safe=True)
     DATABASE.close()
 
-initialize()
+
 """
 Interesting feature     for each in u.get_all_user_entries().dicts():
     Entry.write_entry(User.get(User.id==1), "test", 1, "nada", "imember")
