@@ -66,7 +66,7 @@ def login():
 def logout():
     logout_user()
     flash("You've been logged out! Come back soon!", "success")
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
@@ -101,8 +101,9 @@ def edit(entry_id):
     entry = models.Entry.select().where(models.Entry.id == entry_id).get()
     form = forms.EntryForm()
     if form.validate_on_submit():
-        entry.update(title = form.title.data,
-                     date = form.date.data,
+        entry.user=models.User.get(models.User.id==1)
+        entry.title = form.title.data
+        entry.date = form.date.data
                      time_spent = form.time_spent.data,
                      learnings = form.learnings.data,
                      rememberings = form.rememberings.data)
@@ -113,11 +114,9 @@ def edit(entry_id):
 @app.route("/entries/delete/<entry_id>", methods=["POST"])
 @login_required
 def delete(entry_id):
-    models.DATABASE.connect()
     with models.DATABASE.transaction():
         target = models.Entry.get(models.Entry.id == entry_id)
         target.delete_instance()
-    models.DATABASE.close()
     return redirect(url_for('entries'))
 
 @app.route("/new", methods=("GET", "POST"))
@@ -125,14 +124,12 @@ def delete(entry_id):
 def new():
     form = forms.EntryForm()
     if form.validate_on_submit():
-        models.DATABASE.connect()
         models.Entry.write_entry(user=models.User.get(models.User.id==1),
                                  title = form.title.data,
                                  date = form.date.data,
                                  time_spent = form.time_spent.data,
                                  learnings = form.learnings.data,
                                  rememberings = form.rememberings.data)
-        models.DATABASE.close()
         flash("New entry created!", "success")
         return redirect(url_for('entries'))
     return render_template("new.html", form=form)

@@ -30,7 +30,7 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
 
-"""
+
 app = Flask(__name__)
 app.secret_key = 'asdf9fs82rnu478200fofj01sksal013rbdabcvbgem2'
 with app.test_request_context():
@@ -41,5 +41,8 @@ with app.test_request_context():
     print(e.title.label)
     print(e.title.id)
     print(e.title.type)
+    print(e.title.object_data)
     print(e.date)
-"""
+    print(e.learnings)
+    e.learnings.data="test"
+    print(e.learnings.data)
