@@ -23,7 +23,16 @@
                         <a class="button icon-right" href="{{ url_for('register') }}"><span>Register</span> <i class="material-icons">how_to_reg</i></a>
                     {% endif %}
                 </div>
-            </div>
+                    {% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                        <h3>
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                        </h3>
+                      {% endif %}
+                    {% endwith %}
+                </div>
         </header>
         {% block content %}{% endblock %}
             <footer>
