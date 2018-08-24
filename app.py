@@ -109,9 +109,9 @@ def specific_entry(entry_id):
 @app.route("/entries/edit/<entry_id>", methods=("GET", "POST"))
 @login_required
 def edit(entry_id):
+    """Allows user to edit an entry if they own it."""
     try:
-        entry = models.User.get_user_entry(entry_id, g.user.id)
-        ##entry = models.Entry.get((models.Entry.id == entry_id)&(g.user.id == models.Entry.user))
+        entry = models.Entry.get_specific_entry_for_user(entry_id, g.user.id)
     except:
         flash("You cannot alter entries you did not write!")
         return redirect(url_for('specific_entry', entry_id=entry_id))
@@ -132,8 +132,9 @@ def edit(entry_id):
 @app.route("/entries/delete/<entry_id>", methods=["POST"])
 @login_required
 def delete(entry_id):
+    """Allows user to delete entry if they own it."""
     try:
-        entry = models.Entry.get((models.Entry.id == entry_id)&(g.user.id == models.Entry.user))
+        entry = models.Entry.get_specific_entry_for_user(entry_id, g.user.id)
     except:
         flash("You cannot alter entries you did not write!")
         return redirect(url_for('specific_entry', entry_id=entry_id))
@@ -145,6 +146,7 @@ def delete(entry_id):
 @app.route("/new", methods=("GET", "POST"))
 @login_required
 def new():
+    """Allows user to create a new journal entry."""
     form = forms.EntryForm()
     if form.validate_on_submit():
         models.Entry.write_entry(user=g.user.id,

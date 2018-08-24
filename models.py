@@ -32,12 +32,6 @@ class User(UserMixin, BaseModel):
         except IntegrityError:
             raise ValueError("User already exists")
 
-    def get_user_entry(self, entry_id, user_id):
-        try:
-            return Entry.get((Entry.id == entry_id) & (Entry.user == user_id))
-        except DoesNotExist:
-            raise ValueError("No records available.")
-
 
 class Entry(BaseModel):
     user = ForeignKeyField(User, backref='entries')
@@ -69,6 +63,11 @@ class Entry(BaseModel):
     @classmethod
     def get_specific_entry(cls, entry_id):
        return cls.select().where(Entry.id == entry_id).get()
+
+    @classmethod
+    def get_specific_entry_for_user(cls, entry_id, user):
+        return Entry.select().where((Entry.user == user) & (Entry.id == entry_id)).get()
+
 
 
 def initialize():
